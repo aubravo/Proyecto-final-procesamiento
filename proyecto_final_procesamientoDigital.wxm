@@ -1,0 +1,66 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 13.04.2 ] */
+
+/* [wxMaxima: input   start ] */
+log10(x):=log(x)/log(10);
+Amax: 1.0$ Amin: 20$ fc:%pi$ fs: 1.7*%pi$ Vs: fs/fc$
+epsilon:sqrt(10^(Amax/10)-1);
+n:ceiling(float(log10(((10^(Amin/10)-1)/(10^(Amax/10)-1))^(1/2))/log10(Vs)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+polosBt(n):=block(
+    for k:1 thru n do
+    (theta_k:((2*k-1)/(2*n))*%pi,sigma[k]:-sin(theta_k)+%i*cos(theta_k)), return(float(sigma)))$
+delta:polosBt(n)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(delta[1]);float(delta[2]);float(delta[3]);float(delta[4]);float(delta[5]);float(delta[6]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b1:float(realpart(expand((s-delta[1])*(s-delta[6]))));
+b2:float(realpart(expand((s-delta[2])*(s-delta[5]))));
+b3:float(realpart(expand((s-delta[3])*(s-delta[4]))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: title   start ]
+PASA BAJAS
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+Ft:1/expand(b1*b2*b3);
+wxplot2d([Ft], [s,0,10],
+ [gnuplot_preamble, "set zeroaxis;"])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+lpwx:256*2*%pi/Vs;
+LP:trigreduce(expand(subst(s=(s/(lpwx)),Ft)));
+wxplot2d([LP], [s,0,20000],
+ [gnuplot_preamble, "set zeroaxis;"])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: title   start ]
+PASA ALTAS
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+HP:subst(s=(1/s),Ft);
+wxplot2d([HP], [s,0,10],
+ [gnuplot_preamble, "set zeroaxis;"])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: title   start ]
+PASA BANDAS
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+BP:subst(s=((s^2+1)/s),Ft);
+wxplot2d([BP], [s,0,10],
+ [gnuplot_preamble, "set zeroaxis;"])$
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
